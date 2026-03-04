@@ -885,7 +885,7 @@ $ valgrind ../src/dict < /home/prof/dictlab-grading/traces/grading-P1-01.txt > /
 When you have completed the lab, you will submit it as follows:
 
 ```shell
-$ git add src/dict.h src/main.c
+$ git add src/dict.c src/main.c
 $ git commit -m "update code"
 $ git push
 ```
