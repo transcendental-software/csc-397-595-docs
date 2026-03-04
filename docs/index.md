@@ -15,3 +15,4 @@ This information is incomplete and you will need to have access to D2L in order 
 - [Lab Assignment 2 Dict Lab](04-dictlab.md)
 - [Lab Assignment 3 Cache Lab](05-cachelab.md)
 - [Lab Assignment 4 Malloc Lab](06-malloclab.md)
+- [Lab Assignment 5 Proxy Lab](07-proxylab.md)
