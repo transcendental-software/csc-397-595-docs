@@ -537,7 +537,7 @@ The first one inserts a pair `(key, val)` in the dictionary, where `val` is of l
 When you have completed the lab, you will submit it as follows:
 
 ```shell
-$ git add src/
+$ git add src/proxy.c
 $ git commit -m "update code"
 $ git push
 ```
