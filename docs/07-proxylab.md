@@ -11,9 +11,6 @@ In this lab, you will write a simple HTTP proxy in four stages:
 - **Part 1.** Deal with GET requests: your proxy reads a GET request with headers from a client and forwards the request to the proper web server.  The proxy then transmits the answer of the server to the client.
 - **Part 2.** Deal with POST requests: similarly, but now your proxy will read the `Content-Length` header of the request and read that many bytes from the client.  It will then forward the entire request to the web server and transmit the server’s answer to the client.
 - **Part 3.** Deal with multiple clients in parallel: using a pre-threaded architecture, your proxy will be able to deal with a fixed number of clients in parallel.
-- **Bonus Parts.**
-    - Implement a cache: replies from the servers will be cached in memory, if a GET request is sent twice, the second one won’t query the server but be served the cached data.
-    - Use polling to read a POST payload at the same time as you read the answer from the web server.
 
 ## 2. Downloading the assignment
 
@@ -35,7 +32,7 @@ $ src/proxy 3142
 Proxy started on port 3142, waiting for connections.
 ```
 
-Once a client connects to the proxy, your proxy should read and parse the entirety of a request from the client (except in the second part of the Bonus). It should determine whether the client has sent a valid HTTP request; if so, it can then establish its own connection to the appropriate web server and request the object the client specified.  Finally, your proxy should read the server’s response and forward it to the client.  *The proxy should never exit;* if it receives an incorrect request or if the client or web server dies, the proxy should gracefully carry on.
+Once a client connects to the proxy, your proxy should read and parse the entirety of a request from the client. It should determine whether the client has sent a valid HTTP request; if so, it can then establish its own connection to the appropriate web server and request the object the client specified.  Finally, your proxy should read the server’s response and forward it to the client.  *The proxy should never exit;* if it receives an incorrect request or if the client or web server dies, the proxy should gracefully carry on.
 
 The port you are going to specify on the command line is arbitrary, within the *unprivileged range* 1024-65535.  It is quite convenient to run your proxy always on the same port while working on the lab, but as we all share the ports on our Linux machine, there should be some discipline about it.  To avoid running into port conflicts, use the ports given by `./ports-for-user`:
 
@@ -160,7 +157,7 @@ The payload may be huge: the proxy *should not* save it in memory but read it in
 
 ### 5.2. Proxy to remote server
 
-As soon as the *headers* are over (after the empty line) and before reading the POST payload, the proxy should connect to the remote server as with GET.  Once the connection is established, the proxy should forward `Content-Length` bytes from the client to the server.  The proxy *should not try* to read from the server until all of the client’s payload is sent to the server, except if you are implementing the corresponding bonus using `poll(2)`.
+As soon as the *headers* are over (after the empty line) and before reading the POST payload, the proxy should connect to the remote server as with GET.  Once the connection is established, the proxy should forward `Content-Length` bytes from the client to the server.  The proxy *should not try* to read from the server until all of the client’s payload is sent to the server.
 
 ### 5.3. Remote server back to client
 
@@ -214,7 +211,7 @@ $ tests/driver.sh -P list
     PART 3b: CONCURRENCY (many files in parallel) -- 12 pts
 ```
 
-The main score sums up to 100 points and the bonus is 64 points.  You should not use any of the prohibited functions in order to score points.
+The main score sums up to 100 points.  You should not use any of the prohibited functions in order to score points.
 
 ### 7.2. Driver
 
@@ -239,7 +236,7 @@ For testing purposes, it will be useful to only start one (sub)part of the drive
 $ tests/driver.sh -P 2c -p 3142
 ```
 
-Running the driver without argument starts all the tests, including the bonus if all parts 1-3 have full score (it is however not necessary to have full score on part 1-3 to score bonus points).
+Running the driver without argument starts all the tests.
 
 The driver logs the output of your proxy and shows the differences between your fetched pages and the expected output in the file `driver.log`.
 
@@ -428,10 +425,6 @@ void Pthread_create(pthread_t* tidp, pthread_attr_t* attrp,
 void Pthread_join(pthread_t tid, void** thread_return);
 void Pthread_cancel(pthread_t tid);
 void Pthread_detach(pthread_t tid);
-
-/**
- * FUNCTIONS FOR BONUS PART CACHE.
- */
 
 /* POSIX semaphore wrappers. */
 void Sem_init(sem_t* sem, int pshared, unsigned int value);
