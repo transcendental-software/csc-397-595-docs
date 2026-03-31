@@ -1,5 +1,5 @@
 ---
-title: Basics of Shell
+title: Linux Shell and Git
 ---
 
 # Lab Assignment 0 Linux Shell and Git
