@@ -1,4 +1,4 @@
-## CSC 374 Computer Systems II  
+## CSC 397/595 Hardware Design and Programming Using FPGAs  
 **Jarvis College of Computing and Digital Media - DePaul University**
 
-CSC 374 Lab Assignment Descriptions using GitHub Pages.
+CSC 397/595 Lab Assignment Descriptions using GitHub Pages.

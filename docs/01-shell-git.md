@@ -2,7 +2,7 @@
 title: Basics of Shell
 ---
 
-# Lab Assignment 0 Basics of Shell
+# Lab Assignment 0 Linux Shell and Git
 
 The following is a crash course on using the command line on UNIX or GNU/Linux systems. The prompt in these examples is simply written `$`; on the server, it will look like:
 
@@ -16,21 +16,18 @@ The following is a crash course on using the command line on UNIX or GNU/Linux s
 You will connect to the server `matrix.cdm.depaul.edu` (**cdmcscaoprd01**) via [`SSH`](https://wikipedia.org/wiki/SSH) and clone the lab files using [`Git`](https://git-scm.com/book/en/v2). If you use Mac OS or Linux, these are standard programs accessible through any terminal. If you use Windows, then I recommend using [PowerShell](https://learn.microsoft.com/en-us/powershell/scripting/learn/ps101/01-getting-started?view=powershell-7.5), or [WSL 2](https://learn.microsoft.com/en-us/windows/wsl/install), or [Git BASH](https://gitforwindows.org/), or [PuTTy](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html).
 
 ### 1.2. Logging in
-Use your lowercase DePaul Campus Connect account name and password to log into the server (e.g., ALEX42 becomes alex42).
+Use your lowercase DePaul Campus Connect account name and password to log into the server (e.g., ALEX42 becomes alex42). When connecting the matrix machine, you will need to use the universitry dedicated bastion/jump host:
 
-```
-$ ssh alex42@matrix.cdm.depaul.edu
-  ...
-Are you sure you want to continue connecting (yes/no/[fingerprint])?  yes
-  ...
-alex42@cdmcscaoprd01's password: CAMPUS CONNECT PASSWORD
-Last login: Mon Jan 13 12:33:17 2025 from 216.220.181.92
-[alex42@cdmcscaoprd01 ~]$
-```
-
-**Note:** If you are connecting from outside of the campus network you will need use the dedicated university bastion/jump host:
 ```
 $ ssh -J alex42@sshjump.depaul.edu alex42@matrix.cdm.depaul.edu
+  ...
+Please enter your DePaul BlueKey password.
+(alex42@sshjump.depaul.edu) Entra Id Password: CAMPUS CONNECT PASSWORD
+Open your Authenticator app, and enter the number '42' to sign in.
+No push? Check your mobile device's internet connection.
+  ...
+alex42@matrix.cdm.depaul.edu's password: CAMPUS CONNECT PASSWORD
+[alex42@cdmcscaoprd01 ~]$
 ```
 
 More information about it can be found here:  
@@ -71,10 +68,12 @@ local-machine$ cat .ssh/id_ed25519.pub
 YOUR-PUBLIC-KEY
 ```
 
+Copy the public key to the bastion/jump host by accessing [https://keymgmt.sshjump.depaul.edu/](https://keymgmt.sshjump.depaul.edu/).
+
 Log into the remote machine, create and copy the public key to authorized_keys:
 
 ```shell
-local-machine$ ssh USER@matrix.cdm.depaul.edu
+local-machine$ ssh -J alex42@sshjump.depaul.edu USER@matrix.cdm.depaul.edu
 remote-machine$ mkdir .ssh # create the .ssh directory if it does not exist
 remote-machine$ touch .ssh/authorized_keys # create the authorized_keys file if it does not exists
 remote-machine$ echo "YOUR-PUBLIC-KEY" >> .ssh/authorized_keys # append your public key to authorized_keys
@@ -222,7 +221,7 @@ To start the lab, you must clone the starter code repository. Run the following 
 
 ```shell
 $ cd ~
-$ git clone https://github.com/transcendental-software/csc-374-lab0.git
+$ git clone https://github.com/transcendental-software/csc-397-595-lab0.git
 ```
 
 This command creates a directory containing all the necessary files for the assignment. You can then navigate into it using `cd`.
@@ -234,17 +233,17 @@ This command creates a directory containing all the necessary files for the assi
 The command [`ls(1)`](https://man7.org/linux/man-pages/man1/ls.1.html) is used to list files. As an argument, it can take the files to be listed, or a directory:
 
 ```shell
-$ cd ~/csc-374-lab0/bos
+$ cd ~/csc-397-595-lab0/bos
 $ ls
 dir1  dir2  dir3  f1  f2  f3
-$ ls ~/csc-374-lab0/bos
+$ ls ~/csc-397-595-lab0/bos
 dir1  dir2  dir3  f1  f2  f3
 ```
 
 To get more information on the files, use the option `-l`:
 
 ```shell
-$ ls -l ~/csc-374-lab0/bos
+$ ls -l ~/csc-397-595-lab0/bos
 total 0
 drwx------ 2 USER domain users 6 Jan  7 17:51 dir1
 drwxr-xr-x 2 USER domain users 6 Jan  7 17:51 dir2
@@ -266,7 +265,7 @@ You wouldn’t be able to go into `dir1`, read the file `f1`,
 A hidden file is a file whose name starts with a period. We have already seen two “special” hidden files: `.`, the current directory, and `..`, the parent directory. To view hidden files when listing, use `-a`:
 
 ```shell
-$ ls -l -a ~/csc-374-lab0/bos
+$ ls -l -a ~/csc-397-595-lab0/bos
 total 0
 drwxrwxr-x 5 USER domain users 91 Jan  7 17:53 .
 drwxr-xr-x 4 USER domain users 38 Jan  7 17:51 ..
@@ -285,9 +284,9 @@ To copy files, use [`cp(1)`](https://man7.org/linux/man-pages/man1/cp.1.html). T
 
 ```shell
 $ cd ~
-$ cp ~/csc-374-lab0/bos/f2 .
+$ cp ~/csc-397-595-lab0/bos/f2 .
 $ ls
-csc374-lab0 f2
+csc397-595-lab0 f2
 $ mv f2 g2
 $ ls
 g2
@@ -298,11 +297,11 @@ $ ls
 To copy and remove directories, use the option `-r`:
 
 ```shell
-$ cp ~/csc-374-lab0/bos .
-cp: omitting directory ‘/home/USER/csc-374-lab0/bos’
-$ cp -r ~/csc-374-lab0/bos lecture0
+$ cp ~/csc-397-595-lab0/bos .
+cp: omitting directory ‘/home/USER/csc-397-595-lab0/bos’
+$ cp -r ~/csc-397-595-lab0/bos lecture0
 $ ls
-csc-374-lab0 lecture0
+csc-397-595-lab0 lecture0
 $ ls lecture0
 dir1  dir2  dir3  f1 f2  f3
 $ rm -r lecture0
@@ -343,7 +342,7 @@ $ ls
 The main commands to view files quickly are [`cat(1)`](https://man7.org/linux/man-pages/man1/cat.1.html) and [`less(1)`](https://man7.org/linux/man-pages/man1/less.1.html). [`cat(1)`](https://man7.org/linux/man-pages/man1/cat.1.html) reads the files provided as arguments, and prints them verbatim:
 
 ```shell
-$ cp ~/csc-374-lab0/boc/hello.c .
+$ cp ~/csc-397-595-lab0/boc/hello.c .
 $ cat hello.c
 #include <stdio.h>
 
