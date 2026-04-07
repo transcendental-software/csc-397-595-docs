@@ -82,6 +82,10 @@ not my_not_gate (w_out, w_in);
 
 You will need to construct intermediate `wire` elements to connect the outputs of your bitwise operations and your adder into your multiplexer network.
 
+You can find more resources here:
+- [Verilog Numbers](https://www.asic-world.com/verilog/syntax1.html#Numbers_in_Verilog);
+- [Verilog Gate Primitives](https://www.asic-world.com/verilog/gate1.html#Gate_Primitives);
+
 ### 4.3. Bitwise Operations (AND, OR, XOR, NOT)
 
 You will implement separate modules for each bitwise operation (`bitwise_and`, `bitwise_or`, `bitwise_xor`, `bitwise_not`). Inside each module, apply standard logic gates to each respective bit of the 8-bit operands `a` and/or `b`. You will instantiate 8 individual primitives for each operation, or use Verilog vector bits if preferred. Connect each bit of the inputs to these gates, and route the outputs appropriately.
