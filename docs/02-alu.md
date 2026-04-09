@@ -53,6 +53,14 @@ A `wire` represents a physical electrical connection between components. By defa
 ```verilog
 wire single_bit;        // 1-bit wire
 wire [7:0] eight_bits;  // 8-bit wire vector (bits 7 down to 0)
+
+wire msb = data[7];        // Accesses the 8th bit (Most Significant Bit)
+wire lsb = data[0];        // Accesses the 1st bit (Least Significant Bit)
+wire bit_three = data[3];  // Accesses the 4th bit
+
+wire [3:0] lower_nibble = data[3:0]; // Extracts bits 3 down to 0 (4 bits total)
+wire [3:0] upper_nibble = data[7:4]; // Extracts bits 7 down to 4 (4 bits total)
+wire [1:0] middle_bits = data[4:3];  // Extracts bits 4 and 3 (2 bits total)
 ```
 
 ### 3.3. Basic Logic Gates
