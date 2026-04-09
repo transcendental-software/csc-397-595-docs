@@ -28,9 +28,57 @@ $ git clone https://github.com/transcendental-software/csc-397-595-lab1-USER.git
 
 This command creates a directory named `csc-397-595-lab1-USER` containing all the necessary files for the assignment. You can then navigate into it using `cd csc-397-595-lab1`. *You only need to modify* the `rtl/alu.v` file. Use the `make` command to compile your code and the `make test` to run all the tests.
 
-## 3. ALU Specifications
+## 3. Basics of Verilog
 
-### 3.1. Inputs and Outputs
+Before diving into the ALU specifications, let's briefly review some fundamental Verilog concepts that you will use in this assignment.
+
+### 3.1. Defining Modules
+
+In Verilog, a `module` is the basic building block of a design. It encapsulates the functionality and defines the input and output ports. A module is declared using the `module` and `endmodule` keywords.
+
+```verilog
+module my_module (
+    input wire a,
+    input wire b,
+    output wire out
+);
+    // Module implementation goes here
+endmodule
+```
+
+### 3.2. Wires and Vectors
+
+A `wire` represents a physical electrical connection between components. By default, a wire is a single bit (a scalar). To represent multiple bits, you can use vectors. Vectors are declared by specifying a range `[msb:lsb]`.
+
+```verilog
+wire single_bit;        // 1-bit wire
+wire [7:0] eight_bits;  // 8-bit wire vector (bits 7 down to 0)
+```
+
+### 3.3. Basic Logic Gates
+
+Verilog provides built-in primitives for basic logic gates like `and`, `or`, `not`, `xor`, `nand`, and `nor`. When instantiating a gate primitive, the output port is always listed first, followed by the input ports. You can also provide an optional instance name.
+
+```verilog
+wire w_out, w_in1, w_in2;
+
+// AND gate
+and my_and (w_out, w_in1, w_in2);
+
+// OR gate
+or my_or (w_out, w_in1, w_in2);
+
+// NOT gate (inverter)
+not my_not (w_out, w_in1);
+```
+
+You can find more resources here:
+- [Verilog Numbers](https://www.asic-world.com/verilog/syntax1.html#Numbers_in_Verilog);
+- [Verilog Gate Primitives](https://www.asic-world.com/verilog/gate1.html#Gate_Primitives);
+
+## 4. ALU Specifications
+
+### 4.1. Inputs and Outputs
 
 Your top-level module should have the following ports:
 
@@ -43,7 +91,7 @@ Your top-level module should have the following ports:
 - `neg`: 1-bit Negative flag (high if the most significant bit of the result is `1`).
 - `overflow`: 1-bit Overflow flag (high if signed addition/subtraction produces an invalid sign bit).
 
-### 3.2. Operations
+### 4.2. Operations
 
 The `op` selector will determine the output result based on the following mapping:
 
@@ -56,43 +104,21 @@ The `op` selector will determine the output result based on the following mappin
 - `3'b110`: Signed Greater Than (`out = ($signed(a) > $signed(b)) ? 8'h01 : 8'h00`)
 - `3'b111`: Signed Less Than (`out = ($signed(a) < $signed(b)) ? 8'h01 : 8'h00`)
 
-## 4. Implementation Requirements
+## 5. Implementation Requirements
 
-### 4.1. Wires and Logic Primitives
+### 5.1. Wires and Logic Primitives
 
 You must use structural gate-level modeling for your combinational logic implementation. In Verilog, a `wire` data structure represents a physical electrical connection between elements. Since you will strictly use built-in logic gate primitives (e.g., `and`, `or`, `not`, `xor`, `nand`, `nor`), you will need to declare various `wire` arrays (e.g., `wire [7:0] and_result;`) to route data between your gates and sub-modules. 
 
 Do not use behavioral modeling constructs (like `always` blocks or `if-else` statements) or continuous assignments with built-in arithmetic operators (like `assign out = a + b`).
 
-### 4.2. Using Logic Primitives in Verilog
-
-Verilog provides built-in primitives for basic logic gates. To instantiate a gate, you use the primitive name followed by an instance name (optional) and the port connections. The output is always listed first.
-
-For example, to perform a bitwise AND between wires `w1` and `w2` and store the result in `w3`:
-
-```verilog
-and my_and_gate (w3, w1, w2);
-```
-
-For a NOT gate (inverter):
-
-```verilog
-not my_not_gate (w_out, w_in);
-```
-
-You will need to construct intermediate `wire` elements to connect the outputs of your bitwise operations and your adder into your multiplexer network.
-
-You can find more resources here:
-- [Verilog Numbers](https://www.asic-world.com/verilog/syntax1.html#Numbers_in_Verilog);
-- [Verilog Gate Primitives](https://www.asic-world.com/verilog/gate1.html#Gate_Primitives);
-
-### 4.3. Bitwise Operations (AND, OR, XOR, NOT)
+### 5.2. Bitwise Operations (AND, OR, XOR, NOT)
 
 You will implement separate modules for each bitwise operation (`bitwise_and`, `bitwise_or`, `bitwise_xor`, `bitwise_not`). Inside each module, apply standard logic gates to each respective bit of the 8-bit operands `a` and/or `b`. You will instantiate 8 individual primitives for each operation, or use Verilog vector bits if preferred. Connect each bit of the inputs to these gates, and route the outputs appropriately.
 
 **Flag Updates:** For bitwise operations, the `cout` and `overflow` flags should be `0`. The `zero` flag is `1` if all bits of the output result are `0`. The `neg` flag is the most significant bit (bit 7) of the output result.
 
-### 4.4. Arithmetic Operations (Addition and Subtraction)
+### 5.3. Arithmetic Operations (Addition and Subtraction)
 
 To implement the 8-bit addition, first implement the provided `full_adder` 1-bit module using only logic primitives. Once complete, implement an `adder_8bit` module by chaining 8 of these `full_adder` modules together to create an 8-bit Ripple Carry Adder.
 
@@ -102,7 +128,7 @@ For subtraction, implement a `subtractor_8bit` module. You should reuse your `ad
 
 **Flag Updates:** For subtraction, the flags follow the same logic as addition, evaluated on the two's complement adder's difference output and carry signals.
 
-### 4.5. Comparison Operations (Equal, Greater Than, Less Than)
+### 5.4. Comparison Operations (Equal, Greater Than, Less Than)
 
 Implement separate modules for these comparison operations (`signed_eq`, `signed_gt`, `signed_lt`). These modules should rely on the flags generated by the `subtractor_8bit` module rather than recalculating the subtraction:
 - **Signed Equal:** The output is true (8'h01) if the `zero` flag is true.
@@ -111,11 +137,11 @@ Implement separate modules for these comparison operations (`signed_eq`, `signed
 
 **Flag Updates:** For comparison operations, the `cout` and `overflow` flags should be `0`. Since the output is strictly `8'h01` or `8'h00`, the `neg` flag will always be `0`, and the `zero` flag will be `1` when the comparison is false (i.e., the output is `8'h00`).
 
-### 4.6. Output Multiplexer
+### 5.5. Output Multiplexer
 
 In the top-level `alu` module, you will instantiate all the operation modules along with an output multiplexer. To select the correct 8-bit output result based on the 3-bit `op` code, implement the `mux8_1bit` module using logic primitives. Then, instantiate 8 of these multiplexers in your `alu` module to construct a full 8-bit multiplexer, routing the intermediate results of your operation modules to the final `out` port. You must also implement logic to route and output the correct `cout`, `zero`, `neg`, and `overflow` flags based on the selected operation (e.g., routing arithmetic flags during addition/subtraction, and evaluating global flags like `zero` and `neg` on the final ALU output).
 
-### 4.7. File Structure
+### 5.6. File Structure
 
 All your implementation will take place in the provided `alu.v` skeleton file. You will see the following module stubs to complete:
 - `bitwise_and`, `bitwise_or`, `bitwise_xor`, `bitwise_not`: Modules for bitwise operations.
@@ -125,7 +151,7 @@ All your implementation will take place in the provided `alu.v` skeleton file. Y
 - `mux8_1bit`: A 1-bit 8-to-1 multiplexer to select outputs.
 - `alu`: The top-level design integrating all the above modules and multiplexer network.
 
-## 5. Running Tests Locally
+## 6. Running Tests Locally
 
 Before submitting your code, it is highly recommended that you run the test suite locally to ensure your ALU implementation works correctly and passes all requirements. We have provided a Makefile to simplify this process.
 
@@ -137,7 +163,7 @@ $ make test
 
 If there are any syntax errors or failing test cases, the output will help you identify which operation or flag is incorrect. The GitHub Classroom autograder will run this exact same test suite when you push your code.
 
-## 6. Debugging with GTKWave
+## 7. Debugging with GTKWave
 
 If your local tests are failing, you can use a waveform viewer like [**GTKWave**](https://gtkwave.github.io/gtkwave/index.html) to inspect the internal signals of your design and identify where the logic went wrong. When you run `make test`, the testbench automatically calls `vvp bin/alu.vvp` and passes an input to the simulation. Each `vpp` call generates a waveform dump file named `alu.vcd`.
 
@@ -149,7 +175,7 @@ $ gtkwave alu.vcd
 
 Tracing the signals visually makes it much easier to tell if a bug is caused by a flipped bit, a disconnected wire, or an incorrectly mapped primitive.
 
-## 7. Submitting Your Code
+## 8. Submitting Your Code
 
 Once you have completed your implementation and tested it locally, you need to push your code to your GitHub Classroom repository. Pushing your code will automatically trigger the autograding tests.
 
