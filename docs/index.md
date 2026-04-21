@@ -11,3 +11,4 @@ This information is incomplete and you will need to have access to D2L in order 
 ## Quick Links
 - [Lab Assignment 0 Linux Shell and Git](01-shell-git.md)
 - [Lab Assignment 1 8-Bit ALU Implementation](02-alu.md)
+- [Lab Assignment 2 Firewall Filter FSM](03-fw.md)
