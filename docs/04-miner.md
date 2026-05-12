@@ -138,13 +138,13 @@ module miner (
 
 Your accelerator must implement a sequential datapath:
 
-1. **IDLE State:** Wait for the CPU to write a `1` to the `CTRL_REG`. When this happens, initialize your internal `nonce` counter to `0` and move to the BUSY state.
+1. **IDLE State:** Wait for the `start` signal to go high (`1`). The `start` signal acts as a trigger from the wrapper, pulsing high for one clock cycle when the CPU requests to start mining. When this happens, initialize your internal `nonce` counter to `0`, set the `busy` output to `1` (indicating to the wrapper and software that hashing is in progress), and move to the BUSY state.
 2. **BUSY State:** 
-    - On every clock cycle, calculate the `simple_hash` using the current data registers (`DATA0_REG` through `DATA3_REG`) and the current `nonce`.
+    - On every clock cycle, calculate the `simple_hash` using the current data inputs (`data0` through `data3`) and the current `nonce`. Keep the `busy` signal set to `1`.
     - *Hint:* The hash calculation can be done purely using combinational logic (`wire` assignments) because it only involves bitwise shifts, XORs, and an addition.
-    - If `hash <= TARGET_REG`, transition to the DONE state.
+    - If `hash <= target`, transition to the DONE state.
     - Otherwise, increment the `nonce` counter (`nonce <= nonce + 1`) and remain in the BUSY state.
-3. **DONE State:** Wait for the CPU to read the `NONCE_REG`. Ensure that reading the `CTRL_REG` returns `0` (indicating the miner is no longer busy).
+3. **DONE State:** Deassert the `busy` signal (`busy = 0`). This communicates back to the wrapper and the software that the mining process is complete and the winning `nonce` is valid and ready to be read. The FSM can safely remain here or return to IDLE until a new `start` signal is received.
 
 ### 6.4 Testing the Hardware Miner
 
