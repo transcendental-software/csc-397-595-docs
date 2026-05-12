@@ -23,7 +23,7 @@ Now you can clone your repository in your home directory on the **matrix.cdm.dep
 
 ```shell
 $ cd ~
-$ git clone https://github.com/transcendental-software/csc-397-595-lab1-USER.git
+$ git clone git@github.com:transcendental-software/csc-397-595-lab1-USER.git
 ```
 
 This command creates a directory named `csc-397-595-lab1-USER` containing all the necessary files for the assignment. You can then navigate into it using `cd csc-397-595-lab1`. *You only need to modify* the `rtl/alu.v` file. Use the `make` command to compile your code and the `make test` to run all the tests.

@@ -72,7 +72,7 @@ Now you can clone your repository in your home directory on the **matrix.cdm.dep
 
 ```shell
 $ cd ~
-$ git clone --recurse-submodules https://github.com/transcendental-software/csc-397-595-lab3-USER.git
+$ git clone --recurse-submodules git@github.com:transcendental-software/csc-397-595-lab3-USER.git
 ```
 
 This command creates a directory named `csc-397-595-lab3-USER` containing all the necessary files for the assignment. You can then navigate into it using `cd csc-397-595-lab3`. *You only need to modify* the `rtl/miner.v` and `src/main.c` files. Use the `make` command to compile your code and the `make test` to run all the tests.
