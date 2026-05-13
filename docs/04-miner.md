@@ -77,7 +77,7 @@ $ cd ~
 $ git clone --recurse-submodules git@github.com:transcendental-software/csc-397-595-lab3-USER.git
 ```
 
-This command creates a directory named `csc-397-595-lab3-USER` containing all the necessary files for the assignment. You can then navigate into it using `cd csc-397-595-lab3`. *You only need to modify* the `rtl/miner.v` and `src/main.c` files. Use the `make` command to compile your code and the `make test` to run all the tests.
+This command creates a directory named `csc-397-595-lab3-USER` containing all the necessary files for the assignment. You can then navigate into it using `cd csc-397-595-lab3-USER`. *You only need to modify* the `rtl/miner.v` and `src/main.c` files. Use the `make` command to compile your code and the `make test` to run all the tests.
 
 ## 5. Part 1: C Software Implementation
 
@@ -85,16 +85,8 @@ In the `src/` directory, you will find the `main.c` skeleton file. You need to i
 
 ### 5.1 Software Requirements
 
-1. Implement the `simple_hash` function in C.
-2. Implement the `mine_sw(uint32_t data0, uint32_t data1, uint32_t data2, uint32_t data3, uint32_t target)` function. This function should use a `while` or `for` loop to test nonces starting from `0`.
-3. Inside the loop, compute the hash. If the hash is less than or equal to the `target`, break the loop and return the winning nonce.
-
-You can compile and run your software test locally using the provided simulator script:
-
-```shell
-$ cd src
-$ make sim
-```
+1. Implement the `mine_sw(uint32_t data0, uint32_t data1, uint32_t data2, uint32_t data3, uint32_t target)` function. This function should use a `while` or `for` loop to test nonces starting from `0`.
+2. Inside the loop, compute the hash. If the hash is less than or equal to the `target`, break the loop and return the winning nonce.
 
 ## 6. Part 2: Verilog Hardware Accelerator
 
@@ -148,23 +140,6 @@ Your accelerator must implement a sequential datapath:
     - Otherwise, increment the `nonce` counter (`nonce <= nonce + 1`) and remain in the BUSY state.
 3. **DONE State:** Deassert the `busy` signal (`busy = 0`). This communicates back to the wrapper and the software that the mining process is complete and the winning `nonce` is valid and ready to be read. The FSM can safely remain here or return to IDLE until a new `start` signal is received.
 
-### 6.4 Testing the Hardware Miner
-
-To verify your Verilog implementation, we have provided a hardware testbench.
-
-```shell
-$ cd src
-$ make image install
-$ cd ../rtl
-$ make sim
-```
-
-You can debug your FSM states and the hash calculations using GTKWave:
-
-```shell
-$ gtkwave miner.vcd
-```
-
 ## 7. Putting It Together (Co-design)
 
 Once both `main.c` and `miner.v` are implemented, the final step in `main.c` is to write a routine that interacts with your custom Verilog hardware from C.
@@ -183,26 +158,40 @@ You will use pointer arithmetic in C to write to the XBUS addresses matching you
 
 uint32_t mine_hw(uint32_t data0, uint32_t data1, uint32_t data2, uint32_t data3, uint32_t target) {
     // 1. Write data words and target to hardware
-    HW_MINER_DATA0 = data0;
-    HW_MINER_DATA1 = data1;
-    HW_MINER_DATA2 = data2;
-    HW_MINER_DATA3 = data3;
-    HW_MINER_TARGET = target;
+    MINER_DATA0 = data0;
+    MINER_DATA1 = data1;
+    MINER_DATA2 = data2;
+    MINER_DATA3 = data3;
+    MINER_TARGET = target;
     
     // 2. Start the hardware miner
-    HW_MINER_CTRL = 1;
+    MINER_CTRL = 1;
     
     // 3. Poll the status register until busy bit is 0
-    while (HW_MINER_CTRL & 1) {
+    while (MINER_CTRL & 1) {
         // Wait...
     }
     
     // 4. Return the found nonce
-    return HW_MINER_NONCE;
+    return MINER_NONCE;
 }
 ```
 
 When executed on the NEORV32 SoC, you will observe the software miner taking significantly longer to complete compared to the hardware accelerator, perfectly illustrating the value of FPGA hardware offloading.
+
+### 7.1 Testing the Software and Hardware Miner
+
+To verify your implementation, we have provided a hardware simulator that uses Verilator:
+
+```shell
+$ make sim
+```
+
+You can also run the auto-grader script by calling:
+
+```shell
+$ make test
+```
 
 ## 8. Submitting Your Code
 
