@@ -6,9 +6,10 @@ title: Proof-of-Work Miner
 
 ## 1. Overview
 
-In this assignment, you will explore the powerful paradigm of **Hardware/Software Co-design**. You will implement a Proof-of-Work (PoW) mining application targeting the **NEORV32 RISC-V Processor**. 
+In this assignment, you will explore the powerful paradigm of **Hardware/Software Co-design**. You will implement a Proof-of-Work (PoW) mining application targeting the **NEORV32 RISC-V Processor**.
 
 You will be required to build two distinct solutions that accomplish the exact same task:
+
 1. **A Software Implementation:** Written in C, running natively on the NEORV32 processor.
 2. **A Hardware Accelerator:** Written in Verilog, designed as a custom memory-mapped peripheral connected to the NEORV32 through the XBUS interface.
 
@@ -19,8 +20,9 @@ By completing this lab, you will experience firsthand the performance advantages
 The [**NEORV32**](https://github.com/stnolting/neorv32) is an open-source, highly customizable 32-bit RISC-V microcontroller System-on-Chip (SoC) written in platform-independent VHDL. It is designed to be easily deployed on FPGAs. 
 
 Key features of the NEORV32 relevant to this lab include:
+
 - **RISC-V CPU:** Executes standard 32-bit RISC-V instructions (`rv32i`). Your C code will be compiled using a RISC-V GCC toolchain and executed on this core.
-- **External Bus Interface (XBUS):** A Wishbone-compatible bus interface that acts as a gateway to attach custom memory-mapped hardware. 
+- **External Bus Interface (XBUS):** A Wishbone-compatible bus interface that acts as a gateway to attach custom memory-mapped hardware.
 
 In standard software execution, the CPU fetches and executes instructions sequentially. While flexible, loops and bitwise operations take multiple clock cycles per iteration. By designing an XBUS-connected hardware accelerator, we can compute an entire hash and test a variable (a *nonce*) in a single clock cycle, vastly outperforming the software approach.
 
